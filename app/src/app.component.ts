@@ -1,8 +1,7 @@
 import {Component, ChangeDetectorRef} from '@angular/core';
 
 import { template } from './app.tpl';
-import {LocationService} from './components/common/location.service';
-import {GoogleMapModelService} from './components/common/google_maps_model.service';
+import {LocationService} from './modules/sharedModule/services/location.service';
 
 @Component({
   selector: 'my-app',

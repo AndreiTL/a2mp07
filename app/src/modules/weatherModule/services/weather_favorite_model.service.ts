@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {StorageService} from './storage.service';
+import {StorageService} from '../../sharedModule/services/storage.service';
 import {WeatherModelService} from './weather_model.service';
 
 @Injectable()

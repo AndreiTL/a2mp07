@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
-import {StorageService} from './storage.service';
-import {RestService} from './rest.service';
+import {StorageService} from '../../sharedModule/services/storage.service';
+import {RestService} from '../../sharedModule/services/rest.service';
 import {Subject} from 'rxjs'
-import IWeather = Weather.IWeather;
+// import IWeather = Weather.IWeather;
 
 @Injectable()
 export class WeatherModelService {

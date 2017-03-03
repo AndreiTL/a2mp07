@@ -1,8 +1,8 @@
 import {Component, Input, ChangeDetectorRef} from '@angular/core';
 import {template} from './weather.tpl';
 
-import {WeatherModelService} from '../common/weather_model.service';
-import {WeatherFavoriteModelService} from '../common/weather_favorite_model.service';
+import {WeatherModelService} from '../../services/weather_model.service';
+import {WeatherFavoriteModelService} from '../../services/weather_favorite_model.service';
 import {Observable, Observer} from 'rxjs';
 
 @Component({

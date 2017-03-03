@@ -1,6 +1,6 @@
 import {Component, Input, NgZone, ChangeDetectionStrategy} from '@angular/core';
 import {template} from './header.tpl';
-import {WeatherModelService} from '../common/weather_model.service';
+import {WeatherModelService} from '../../modules/weatherModule/services/weather_model.service';
 
 @Component({
   selector: 'my-header',
