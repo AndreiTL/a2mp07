@@ -1,5 +1,6 @@
-import { NgModule }      from '@angular/core';
+import { NgModule } from '@angular/core';
 
+import {RootModule} from './modules/rootModule/root.module';
 import {GoogleMapModule} from './modules/googleMap/googlemap.module';
 import {SharedModule} from './modules/sharedModule/shared.module';
 import {WeatherModule} from './modules/weatherModule/weather.module';
@@ -11,6 +12,7 @@ import {FooterComponent} from './components/footer/footer.component';
 
 @NgModule({
   imports: [
+    RootModule.forRoot(),
     SharedModule.forRoot(),
     GoogleMapModule,
     WeatherModule
@@ -20,7 +22,6 @@ import {FooterComponent} from './components/footer/footer.component';
     HeaderComponent,
     FooterComponent,
   ],
-
-  bootstrap:    [ AppComponent ]
+  bootstrap: [ AppComponent ]
 })
 export class AppModule { }
