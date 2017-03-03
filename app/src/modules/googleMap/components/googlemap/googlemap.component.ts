@@ -3,8 +3,6 @@ import {Component, Input, ChangeDetectorRef} from '@angular/core';
 import {Observable, Observer} from 'rxjs';
 
 import {GoogleMapModelService} from '../../services/google_maps_model.service';
-// import {WeatherModelService} from '../../services/weather_model.service';
-// import {MarkersService} from '../../services/markers.service';
 import {WeatherModelService} from '../../../weatherModule/services/weather_model.service';
 import {MarkersService} from '../../services/markers.service';
 

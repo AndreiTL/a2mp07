@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {StorageService} from '../../sharedModule/services/storage.service';
+import {StorageService} from './storage.service';
 import {WeatherModelService} from './weather_model.service';
 
 @Injectable()
@@ -10,8 +10,6 @@ export class WeatherFavoriteModelService {
   constructor(
       private weatherModelService: WeatherModelService,
       private storageService: StorageService,
-
-
   ) {
     this.callFunctionsArray = [];
   }

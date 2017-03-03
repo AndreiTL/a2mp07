@@ -5,6 +5,8 @@ import {SharedModule} from '../sharedModule/shared.module';
 import {WeatherComponent } from './components/weather/weather.component';
 import {WeatherModelService} from './services/weather_model.service';
 import {WeatherFavoriteModelService} from './services/weather_favorite_model.service';
+import {StorageService} from './services/storage.service';
+import {RestService} from './services/rest.service';
 
 import {TemperatureCelciumPipe} from './pipes/temperature.pipe';
 import {WindDirectionTextPipe} from './pipes/winddirectiontext.pipe';
@@ -27,7 +29,9 @@ import {WindArrowDirective} from './directives/wind-arrow.directive';
   ],
   providers: [
     WeatherModelService,
-    WeatherFavoriteModelService
+    WeatherFavoriteModelService,
+    StorageService,
+    RestService
   ],
   exports: [
     WeatherComponent

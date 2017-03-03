@@ -1,8 +1,7 @@
 import {Injectable} from '@angular/core';
-import {StorageService} from '../../sharedModule/services/storage.service';
-import {RestService} from '../../sharedModule/services/rest.service';
+import {StorageService} from './storage.service';
+import {RestService} from './rest.service';
 import {Subject} from 'rxjs'
-// import IWeather = Weather.IWeather;
 
 @Injectable()
 export class WeatherModelService {
@@ -154,7 +153,6 @@ export class WeatherModelService {
   private promiseLoadHandlerReject = (error: string) => {
     this.subjectTownsWeather.error(error);
   };
-
 
   //subject: Subject<Weather.IWeatherObject>
   private initLoadInCircle(options: Weather.IWeatherParams): Promise<Weather.ITownWeather[]> {
