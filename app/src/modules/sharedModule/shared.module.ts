@@ -2,8 +2,6 @@ import {NgModule, ModuleWithProviders}      from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule }   from '@angular/forms';
 
-import {LocationService} from './services/location.service';
-
 import {LoadMaskComponent} from './components/loadmask/loadmask.component';
 
 @NgModule({
@@ -23,10 +21,7 @@ import {LoadMaskComponent} from './components/loadmask/loadmask.component';
 export class SharedModule {
   static forRoot(): ModuleWithProviders {
     return {
-      ngModule: SharedModule,
-      providers: [
-        LocationService
-      ]
+      ngModule: SharedModule
     }
   }
 
