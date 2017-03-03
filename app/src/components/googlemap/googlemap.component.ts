@@ -1,83 +1,115 @@
-import {Component, Input} from '@angular/core';
-import {template} from './googlemap.tpl';
+import {Component, Input, ChangeDetectorRef} from '@angular/core';
 
-import {GoogleMapLoaderService} from '../common/google_maps_loader.service';
+import {Observable, Observer} from 'rxjs';
+
+import {GoogleMapModelService} from '../common/google_maps_model.service';
 import {WeatherModelService} from '../common/weather_model.service';
 import {MarkersService} from '../common/markers.service';
 
+import {template} from './googlemap.tpl';
+
 @Component({
   selector: 'googlemap',
-  template: template,
-  providers: [ GoogleMapLoaderService ]
+  template: template
 })
 export class GooglemapComponent {
   @Input() location: ILocation.ICoordinates;
   @Input() zoom: number = 1;
 
-  key: string = 'AIzaSyDdauxpzXTyktNa8x97awm9_3X-3pycINA';
+  selector: string = 'googlemap';
 
-  googleMapObj: google.maps.Map;
-  inLoading: boolean;
+  townsTable: Weather.ITownWeather[];
+
+  townsWeatherSource: Observable<Weather.ITownWeather[]>;
+  townsWeatherObserver: () => Observer<Weather.ITownWeather[]>;
+
   markerArray: NGoogleMapService.IMarkerPoint[];
+  markerArrayDetach: any[];
 
-  constructor(private googleMapLoaderService: GoogleMapLoaderService,
-              // private zone: NgZone,
+  googlemapCoordinates: ILocation.ISimpleCoordinate;
+  googlemapPositionSource: Observable<ILocation.ISimpleCoordinate>;
+  googleMapPositionObserver: () => Observer<ILocation.ISimpleCoordinate>;
+
+  constructor(
+              private cd: ChangeDetectorRef,
               private weatherModelService: WeatherModelService,
-              private markersService: MarkersService
+              private markersService: MarkersService,
+              private googleMapModelService: GoogleMapModelService
   ) {
     console.log('GooglemapComponent init.');
-    this.inLoading = true;
+    this.markerArrayDetach = [];
+
     this.markerArray = [];
-    weatherModelService.addListener(this.updateView.bind(this));
+    this.townsTable = [];
+    this.googlemapCoordinates = {lat: 0, lng: 0};
+
+    this.townsWeatherSource = this.weatherModelService.getRxTownsWeather();
+    this.googlemapPositionSource = this.googleMapModelService.getRxCurrentPosition();
+
+    // get towns weather
+    this.townsWeatherObserver = () => {return {
+      next: value => {
+        console.log('next googlemp');
+        console.dir(value);
+        this.townsTable = value;
+        this.markerArray = this.markersService.processMarkers(this.townsTable);
+        this.googleMapModelService.updateMarkers(this.markerArray);
+        this.cd.detectChanges();
+      },
+      error: err => {
+        console.log('err googlemp');
+        console.dir(err);
+      },
+      complete: () => {
+        console.log('comlete thread googlemp');
+      }
+    }};
+    this.townsWeatherSource.subscribe(this.townsWeatherObserver());
+
+    this.googleMapPositionObserver = () => {return {
+      next: value => {
+        this.googlemapCoordinates = value;
+        this.cd.detectChanges();
+      },
+      error: err => {
+        console.log('err position of googlemap');
+        console.dir(err);
+      },
+      complete: () => {
+        console.log('comlete thread position of googlemap');
+      }
+    }};
+
+    // let openings = Observable.interval(200);
+    // RX.jx query
+    this.googlemapPositionSource
+      .map( (value: ILocation.ISimpleCoordinate) => {
+        let newValue: ILocation.ISimpleCoordinate = {
+          lat: Math.round(value.lat * 10000) / 10000,
+          lng: Math.round(value.lng * 10000) / 10000
+        };
+        return newValue
+      })
+      // .window( openings, (value: Observable<ILocation.ISimpleCoordinate>) => {
+      //   return value;
+      // })
+      // .merge()
+      .debounce( () => {
+        return Observable.timer(100);
+      } )
+      .subscribe(this.googleMapPositionObserver());
   }
 
   ngAfterContentInit() {
-    this.initMap(this.location);
+    this.googleMapModelService.initMap(this.location, this.zoom, this.selector);
   }
 
-  setMapCenterAndZoom(lat: number, lng: number, zoom: number) {
-    let mapOptions: google.maps.MapOptions = {
-      center: {
-        lat: lat,
-        lng: lng
-      },
-      zoom: zoom
-    };
-    this.googleMapObj.setOptions(mapOptions);
+  addNearestTownWeather(lat: number, lng: number) {
+    this.weatherModelService.addNearestTowns({
+      latitude: lat,
+      longitude: lng,
+      count: 1
+    })
   }
 
-  setMarkers(markerSetArray: NGoogleMapService.IMarkerPoint[]) {
-    this.markerArray = markerSetArray;
-    markerSetArray.forEach((value: NGoogleMapService.IMarkerPoint) => {
-      new google.maps.Marker({
-        position: {lat: value.lat, lng: value.lng},
-        map: this.googleMapObj,
-        title: value.text
-      });
-    });
-  }
-
-  initMap(location: ILocation.ICoordinates) {
-    this.googleMapLoaderService.load({key: this.key}).then((googleMaps: any) => {
-      // noinspection TsLint
-      this.googleMapObj = new googleMaps.Map(document.getElementById('googlemap'), {
-        center: {lat: location.latitude, lng: location.longitude},
-        zoom: this.zoom
-      });
-      this.inLoading = false;
-      if (this.markerArray.length > 0) {
-        this.setMarkers(this.markerArray);
-      }
-    }).catch((err: Object) => {
-      console.error(err);
-      alert('Cann\'t load google map!');
-    });
-  }
-
-  updateView(): void {
-    this.markerArray = this.markersService.processMarkers(this.weatherModelService.getTownsWeather());
-    if (!this.inLoading) {
-      this.setMarkers(this.markerArray);
-    } // else do nothing
-  }
 }

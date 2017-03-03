@@ -11,7 +11,7 @@ export const template = `
               <weather [amounttowns]="amountTowns" [location]="coordinates"></weather>
           </div>
           <div class="googlemapbox">
-              <googlemap [zoom]="zoom" [location]="coordinates"></googlemap>     
+              <googlemap [zoom]="zoom" [location]="coordinates"></googlemap>              
           </div>        
       </div>
     </div>
